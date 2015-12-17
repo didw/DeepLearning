@@ -1,4 +1,4 @@
 
 
-useful information
-[demo] (https://github.com/torch/demos)
+### useful information
+- demo : https://github.com/torch/demos
