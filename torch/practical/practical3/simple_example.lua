@@ -22,6 +22,7 @@ local function feval(x_vec)
     -- note: x_vec is a Tensor of 1-dim and size 1, so 
     -- we get its one and only element:
     local x = x_vec[1]
+    print(x)
 
     -- compute and return func val (scalar), and gradient (Tensor)
     f = 0.5*x^2 + x*torch.sin(x)
