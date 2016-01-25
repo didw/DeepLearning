@@ -15,8 +15,8 @@ local opt = {
 -- train sigmoid and requ versions
 model_sigmoid, losses_sigmoid = train(opt, data)
 -- TODO: uncomment once you implement requ
---opt.nonlinearity_type = 'requ'
---model_requ, losses_requ = train(opt, data)
+opt.nonlinearity_type = 'requ'
+model_requ, losses_requ = train(opt, data)
 
 
 --------------------------------------------------------
@@ -25,20 +25,21 @@ model_sigmoid, losses_sigmoid = train(opt, data)
 -- We won't know if we overfit, but we can see how flexible our model is.
 
 -- plot
-gnuplot.figure()
+gnuplot.pngfigure('sigmoid.png')
 gnuplot.plot({'sigmoid',
   torch.range(1, #losses_sigmoid), -- x-coordinates
   torch.Tensor(losses_sigmoid),    -- y-coordinates
   '-'}
   -- TODO: uncomment when you implement requ
-  -- , {'requ',
-  -- torch.range(1, #losses_requ),    -- x-coordinates
-  -- torch.Tensor(losses_requ),       -- y-coordinates
-  -- '-'}
-  )
+  , {'requ',
+  torch.range(1, #losses_requ),    -- x-coordinates
+  torch.Tensor(losses_requ),       -- y-coordinates
+  '-'}
+)
+gnuplot.plotflush()
 
 models = { 
-    --requ = model_requ,  -- TODO: uncomment once you implement requ
+    requ = model_requ,  -- TODO: uncomment once you implement requ
     sigmoid = model_sigmoid 
 }
 for model_name, model in pairs(models) do
@@ -66,7 +67,8 @@ for model_name, model in pairs(models) do
   end
   result[1][1] = 0 -- ugly hack to get the right scale
   result[1][2] = 1 -- ugly hack to get the right scale
-  gnuplot.figure()
+  gnuplot.pngfigure('result.png')
   gnuplot.imagesc(result, model_name)
+  gnuplot.plotflush()
 end
 
