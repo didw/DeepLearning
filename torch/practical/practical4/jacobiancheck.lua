@@ -21,10 +21,13 @@ local function jacobian_wrt_input(module, x, eps)
     -- TODO: modify this to perform a two-sided estimate. Remember to do this carefully, because 
     --       nn modules reuse their output buffer across different calls to forward.
     -- ONE-sided estimate
+    -- TWO-sided estimate
     x[i] = x[i] + eps
-    local z_offset = module:forward(x)
-    x[i] = x[i] - eps
-    jac_est[{{},i}]:copy(z_offset):add(-1, z):div(eps)
+    local z_offset1 = module:forward(x):clone()
+    x[i] = x[i] - 2*eps
+    local z_offset2 = module:forward(x)
+    x[i] = x[i] + eps
+    jac_est[{{},i}]:copy(z_offset1):add(-1, z_offset2):div(2*eps)
   end
 
   -- computes (symmetric) relative error of gradient
