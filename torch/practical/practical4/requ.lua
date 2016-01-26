@@ -16,6 +16,7 @@ function ReQU:updateGradInput(input, gradOutput)
   -- TODO
   self.gradInput:resizeAs(gradOutput):copy(gradOutput)
   -- dz_dx = 2x
+  self.gradInput[torch.lt(input,0)] = 0
   self.gradInput:cmul(input)
   self.gradInput:mul(2)
   return self.gradInput
