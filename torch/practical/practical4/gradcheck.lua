@@ -18,8 +18,11 @@ local function checkgrad(f, g, x, eps)
   for i = 1, grad:size(1) do
     -- TODO: do something with x[i] and evaluate f twice, and put your estimate of df/dx_i into grad_est[i]
     x[i] = x[i] + eps
-    ...something(s) here
-    grad_est[i] = ...something here
+    f1 = f(x)
+    x[i] = x[i] - 2*eps
+    f2 = f(x)
+    x[i] = x[i] + eps
+    grad_est[i] = (f1 - f2) / (2*eps)
   end
 
   -- computes (symmetric) relative error of gradient
