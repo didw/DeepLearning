@@ -22,3 +22,6 @@ print(mlp:forward({inp1, inp2, inp3}))
 
 -- should print 10 array of 41
 
+-- it produce 'simple-graph.png.svg' file
+graph.dot(mlp.fg, 'MLP', 'simple-graph.png')
+

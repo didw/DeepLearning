@@ -1,0 +1,73 @@
+digraph G {
+	graph [bb="0,0,1017,744"];
+	node [label="\N",
+		shape=oval
+	];
+	n1	 [height=1.3356,
+		label="Node1\ninput = {Tensor[10],Tensor[10]}\lmodule = nn.CAddTable\lmapindex = {Node3,Node4}",
+		pos="361,138",
+		tooltip="[[string \"z = nn.CAddTable()({x1, z1})...\"]]:1_",
+		width=3.8653];
+	n2	 [height=0.74639,
+		label="Node2\ninput = {Tensor[10]}",
+		pos="361,27",
+		tooltip="[[C]]:-1_",
+		width=2.6216];
+	n1 -> n2	 [pos="e,361,53.938 361,89.825 361,81.168 361,72.259 361,63.995"];
+	n3	 [height=1.041,
+		label="Node3\ninput = {Tensor[10]}\lmodule = nn.Identity",
+		pos="222,270",
+		tooltip="[[string \"x1 = nn.Identity(10)()...\"]]:1_",
+		width=2.6216];
+	n3 -> n1	 [pos="e,313.5,183.42 258.16,235.18 272.81,221.48 290.05,205.36 306.18,190.27"];
+	n4	 [height=1.3356,
+		label="Node4\ninput = {Tensor[10],Tensor[10]}\lmodule = nn.CMulTable\lmapindex = {Node6,Node7}",
+		pos="501,270",
+		tooltip="[[string \"z1 = nn.CMulTable()({x2, x3})...\"]]:1_",
+		width=3.8653];
+	n4 -> n1	 [pos="e,409.05,183.62 453.21,224.62 441.4,213.66 428.66,201.82 416.52,190.55"];
+	n5	 [height=1.041,
+		label="Node5\ninput = {{Tensor[10],Tensor[10],Tensor[20]}}\lselectindex = 1",
+		pos="194,392",
+		tooltip="[[C]]:-1_-1",
+		width=5.3952];
+	n5 -> n3	 [pos="e,213.5,307.43 202.55,354.34 205.27,342.71 208.3,329.7 211.16,317.47"];
+	n6	 [height=1.041,
+		label="Node6\ninput = {Tensor[10]}\lmodule = nn.Identity",
+		pos="501,392",
+		tooltip="[[string \"x1 = nn.Identity(10)()...\"]]:2_",
+		width=2.6216];
+	n6 -> n4	 [pos="e,501,318.5 501,354.34 501,346.22 501,337.42 501,328.68"];
+	n7	 [height=1.041,
+		label="Node7\ninput = {Tensor[20]}\lmodule = nn.Linear(20 -> 10)",
+		pos="782,392",
+		tooltip="[[string \"x1 = nn.Identity(10)()...\"]]:3_",
+		width=3.5652];
+	n7 -> n4	 [pos="e,587.19,307.81 711.09,360.72 676.39,345.9 634.12,327.85 596.61,311.83"];
+	n8	 [height=1.041,
+		label="Node8\ninput = {{Tensor[10],Tensor[10],Tensor[20]}}\lnSplitOutputs = 3",
+		pos="416,616",
+		tooltip="[[C]]:-1_ split at [/root/torch/install/share/lua/5.1/nngraph/gmodule.lua]:72-mnode",
+		width=5.3952];
+	n8 -> n5	 [pos="e,188.73,429.56 279.6,589.22 254.13,578.53 230.17,563.4 213,542 190.17,513.55 186.62,471.71 188.09,439.61"];
+	n9	 [height=1.041,
+		label="Node9\ninput = {{Tensor[10],Tensor[10],Tensor[20]}}\lselectindex = 2",
+		pos="416,504",
+		tooltip="[[C]]:-1_-2",
+		width=5.3952];
+	n8 -> n9	 [pos="e,416,541.84 416,578.37 416,569.93 416,560.83 416,552.01"];
+	n10	 [height=1.041,
+		label="Node10\ninput = {{Tensor[10],Tensor[10],Tensor[20]}}\lselectindex = 3",
+		pos="823,504",
+		tooltip="[[C]]:-1_-3",
+		width=5.3952];
+	n8 -> n10	 [pos="e,712.56,534.85 526.41,585.16 580.93,570.43 646.81,552.62 702.62,537.54"];
+	n9 -> n6	 [pos="e,473.83,428.16 444.07,466.68 451.62,456.9 459.87,446.23 467.68,436.12"];
+	n10 -> n7	 [pos="e,795.59,429.47 809.35,466.37 806.06,457.56 802.51,448.03 799.09,438.86"];
+	n11	 [height=0.74639,
+		label="Node11\ninput = {Tensor[10],Tensor[10],Tensor[20]}",
+		pos="416,717",
+		tooltip="[[C]]:-1_",
+		width=5.1188];
+	n11 -> n8	 [pos="e,416,653.63 416,689.99 416,681.91 416,672.75 416,663.72"];
+}
