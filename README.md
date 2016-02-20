@@ -29,4 +29,4 @@
  - [graph module](torch/practical/practical5/practical5-nngraph.ipynb)
 
 ## Tensorflow
-- [Machine Learning by stanford on tensorflow](https://github.com/MLinTT/ML2016/tree/master/tensorFlow)(thanks to beckgom)
+- [Machine Learning by stanford on tensorflow](https://github.com/MLinTT/ML2016/tree/master/tensorFlow)(thanks to [beckgom](https://github.com/beckgom))
