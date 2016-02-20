@@ -7,7 +7,7 @@
 - Chapter4: Learning Rate [code](torch/ex4/NN-feval.ipynb)
 
 ### Tutorial
-- Logistic regression
+* Logistic regression
 *- [Logistic regression on mnist](torch/practical/practical3/practical3.ipynb)
 
 - CNN
