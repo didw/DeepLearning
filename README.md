@@ -14,20 +14,19 @@
  - [CNN on CIFAR-10](torch/Tutorial/CIFAR-10.ipynb)
 
 - RNN
--- [RNN on mnist](torch/rnn/rnnmnist.ipynb)
+ - [RNN on mnist](torch/rnn/rnnmnist.ipynb)
 
 - LSTM
--- [train language model on work level Penn Tree Bank dataset](torch/lstm)
--- [LSTM for text generation](torch/practical/practical6)
--- [LSTM for action classification](torch/VC)
+ - [train language model on work level Penn Tree Bank dataset](torch/lstm)
+ - [LSTM for text generation](torch/practical/practical6)
+ - [LSTM for action classification](torch/VC)
 
 ## Torch
 - Add new module
--- [add requ modeul in torch](torch/practical/practical4/requ.lua)
+ - [add requ modeul in torch](torch/practical/practical4/requ.lua)
 
 - Implement graph module
--- [graph module](torch/practical/practical5/practical5-nngraph.ipynb)
+ - [graph module](torch/practical/practical5/practical5-nngraph.ipynb)
 
 ## Tensorflow
 - [Machine Learning by stanford on tensorflow by beckgom](https://github.com/MLinTT/ML2016/tree/master/tensorFlow)
-
