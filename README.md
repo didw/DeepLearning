@@ -8,6 +8,7 @@
 
 ### Tutorial
 * Logistic regression
+
 ** [Logistic regression on mnist](torch/practical/practical3/practical3.ipynb)
 
 - CNN
