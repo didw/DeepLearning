@@ -11,7 +11,7 @@
 -- [Logistic regression on mnist](torch/practical/practical3/practical3.ipynb)
 
 - CNN
--- [CNN on CIFAR-10](torch/Tutorial/CIFAR-10.ipynb)
+--[CNN on CIFAR-10](torch/Tutorial/CIFAR-10.ipynb)
 
 - RNN
 -- [RNN on mnist](torch/rnn/rnnmnist.ipynb)
