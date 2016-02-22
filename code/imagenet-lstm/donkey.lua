@@ -39,12 +39,12 @@ local function loadImage(path)
    return input
 end
 
-local function getPath(path, i)
+local function getPath(path, idx)
    local res="";
    local i = 0
    for splt in string.gmatch(path, "([^.]+)") do        
       if i == 1 then
-         splt = string.format( "%04d", splt + i )
+         splt = string.format( "%04d", splt - idx )
       end
       if i == 0 then
          res = splt
@@ -81,28 +81,32 @@ local mean,std
 --]]
 
 -- function to load the image, jitter it appropriately (random crops etc.)
-local trainHook = function(self, path)
+local trainHook = function(self, path, depth)
    collectgarbage()
-   local input = loadImage(path)
-   local iW = input:size(3)
-   local iH = input:size(2)
-
-   -- do random crop
-   local oW = sampleSize[3]
-   local oH = sampleSize[2]
-   local h1 = math.ceil(torch.uniform(1e-2, iH-oH))
-   local w1 = math.ceil(torch.uniform(1e-2, iW-oW))
-   local out = image.crop(input, w1, h1, w1 + oW, h1 + oH)
-   assert(out:size(3) == oW)
-   assert(out:size(2) == oH)
-   -- do hflip with probability 0.5
-   if torch.uniform() > 0.5 then out = image.hflip(out) end
-   -- mean/std
-   for i=1,3 do -- channels
-      if mean then out[{{i},{},{}}]:add(-mean[i]) end
-      if std then out[{{i},{},{}}]:div(std[i]) end
+   local outs = {}
+   for i=depth-1,0,-1 do
+      local input = loadImage(getPath(path, i))
+      local iW = input:size(3)
+      local iH = input:size(2)
+   
+      -- do random crop
+      local oW = sampleSize[3]
+      local oH = sampleSize[2]
+      local h1 = math.ceil(torch.uniform(1e-2, iH-oH))
+      local w1 = math.ceil(torch.uniform(1e-2, iW-oW))
+      local out = image.crop(input, w1, h1, w1 + oW, h1 + oH)
+      assert(out:size(3) == oW)
+      assert(out:size(2) == oH)
+      -- do hflip with probability 0.5
+      if torch.uniform() > 0.5 then out = image.hflip(out) end
+      -- mean/std
+      for i=1,3 do -- channels
+         if mean then out[{{i},{},{}}]:add(-mean[i]) end
+         if std then out[{{i},{},{}}]:div(std[i]) end
+      end
+      table.insert(outs, out)
    end
-   return out
+   return outs
 end
 
 if paths.filep(trainCache) then
@@ -143,22 +147,26 @@ end
 --]]
 
 -- function to load the image
-testHook = function(self, path)
+testHook = function(self, path, depth)
    collectgarbage()
-   local input = loadImage(path)
-   local oH = sampleSize[2]
-   local oW = sampleSize[3]
-   local iW = input:size(3)
-   local iH = input:size(2)
-   local w1 = math.ceil((iW-oW)/2)
-   local h1 = math.ceil((iH-oH)/2)
-   local out = image.crop(input, w1, h1, w1+oW, h1+oH) -- center patch
-   -- mean/std
-   for i=1,3 do -- channels
-      if mean then out[{{i},{},{}}]:add(-mean[i]) end
-      if std then out[{{i},{},{}}]:div(std[i]) end
+   local outs = {}
+   for i=depth+1,0,-1 do
+      local input = loadImage(path)
+      local oH = sampleSize[2]
+      local oW = sampleSize[3]
+      local iW = input:size(3)
+      local iH = input:size(2)
+      local w1 = math.ceil((iW-oW)/2)
+      local h1 = math.ceil((iH-oH)/2)
+      local out = image.crop(input, w1, h1, w1+oW, h1+oH) -- center patch
+      -- mean/std
+      for i=1,3 do -- channels
+         if mean then out[{{i},{},{}}]:add(-mean[i]) end
+         if std then out[{{i},{},{}}]:div(std[i]) end
+      end
+      table.insert(outs, out)
    end
-   return out
+   return outs
 end
 
 if paths.filep(testCache) then
@@ -196,7 +204,7 @@ else
    print('Estimating the mean (per-channel, shared for all pixels) over ' .. nSamples .. ' randomly sampled training images')
    local meanEstimate = {0,0,0}
    for i=1,nSamples do
-      local img = trainLoader:sample(1)[1]
+      local img = trainLoader:sample(1, 1)[1][1]
       for j=1,3 do
          meanEstimate[j] = meanEstimate[j] + img[j]:mean()
       end
@@ -209,7 +217,7 @@ else
    print('Estimating the std (per-channel, shared for all pixels) over ' .. nSamples .. ' randomly sampled training images')
    local stdEstimate = {0,0,0}
    for i=1,nSamples do
-      local img = trainLoader:sample(1)[1]
+      local img = trainLoader:sample(1, 1)[1][1]
       for j=1,3 do
          stdEstimate[j] = stdEstimate[j] + img[j]:std()
       end

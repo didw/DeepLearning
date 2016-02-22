@@ -97,7 +97,7 @@ function train()
       donkeys:addjob(
          -- the job callback (runs in data-worker thread)
          function()
-            local inputs, labels = trainLoader:sample(opt.batchSize)
+            local inputs, labels = trainLoader:sample(opt.batchSize, opt.depthSize)
             return inputs, labels
          end,
          -- the end callback (runs in the main thread)
@@ -152,11 +152,18 @@ function trainBatch(inputsCPU, labelsCPU)
    labels:resize(labelsCPU:size()):copy(labelsCPU)
 
    local err, outputs
+   local N = opt.batchSize;
+   local T = opt.depthSize;
    feval = function(x)
       model:zeroGradParameters()
       outputs = model:forward(inputs)
-      err = criterion:forward(outputs, labels)
-      local gradOutputs = criterion:backward(outputs, labels)
+      
+     -- Use the Criterion to compute loss; we need to reshape the scores to be
+     -- two-dimensional before doing so. Annoying.
+      local outputs_view = outputs:view(N*T, -1)
+      local labels_view = labels:view(N*T);
+      err = criterion:forward(outputs_view, labels_view)
+      local gradOutputs = criterion:backward(outputs_view, labels_view):view(N, T, -1)
       model:backward(inputs, gradOutputs)
       return err, gradParameters
    end

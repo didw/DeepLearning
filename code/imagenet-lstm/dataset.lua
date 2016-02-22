@@ -306,37 +306,44 @@ function dataset:size(class, list)
 end
 
 -- getByClass
-function dataset:getByClass(class)
+function dataset:getByClass(class, depth)
    local index = math.max(1, math.ceil(torch.uniform() * self.classListSample[class]:nElement()))
    local imgpath = ffi.string(torch.data(self.imagePath[self.classListSample[class][index]]))
-   return self:sampleHookTrain(imgpath)
+   return self:sampleHookTrain(imgpath, depth)
 end
 
 -- converts a table of samples (and corresponding labels) to a clean tensor
 local function tableToOutput(self, dataTable, scalarTable)
    local data, scalarLabels, labels
    local quantity = #scalarTable
-   assert(dataTable[1]:dim() == 3)
-   data = torch.Tensor(quantity,
+   local depth = #scalarTable[1]
+   assert(dataTable[1][1]:dim() == 3)
+   data = torch.Tensor(quantity, depth,
 		       self.sampleSize[1], self.sampleSize[2], self.sampleSize[3])
-   scalarLabels = torch.LongTensor(quantity):fill(-1111)
+   scalarLabels = torch.LongTensor(quantity, depth):fill(-1111)
    for i=1,#dataTable do
-      data[i]:copy(dataTable[i])
-      scalarLabels[i] = scalarTable[i]
+      for j=1,#dataTable[1] do
+         data[i][j]:copy(dataTable[i][j])
+         scalarLabels[i][j] = scalarTable[i][j]
+      end
    end
    return data, scalarLabels
 end
 
 -- sampler, samples from the training set.
-function dataset:sample(quantity)
+function dataset:sample(quantity, depth)
    assert(quantity)
    local dataTable = {}
    local scalarTable = {}
    for i=1,quantity do
       local class = torch.random(1, #self.classes)
-      local out = self:getByClass(class)
+      local classes = {}
+      local out = self:getByClass(class, depth)
       table.insert(dataTable, out)
-      table.insert(scalarTable, class)
+      for j=1,depth do
+         table.insert(classes, class)
+      end
+      table.insert(scalarTable, classes)
    end
    local data, scalarLabels = tableToOutput(self, dataTable, scalarTable)
    return data, scalarLabels
