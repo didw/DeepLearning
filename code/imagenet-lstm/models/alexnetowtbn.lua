@@ -23,6 +23,7 @@ function createModel(nGPU)
 
    features:cuda()
    features = makeDataParallel(features, nGPU) -- defined in util.lua
+    print('features: ', torch.type(features))
 
    local classifier = nn.Sequential()
    classifier:add(nn.View(256*6*6))
@@ -42,7 +43,9 @@ function createModel(nGPU)
 
    classifier:cuda()
 
-   local model = nn.Sequential():add(features):add(classifier)
+   --local model = nn.Sequential():add(features):add(classifier)
+   local model = nn.Sequential():add(features)
+    print('model: ', torch.type(model))
    model.imageSize = 256
    model.imageCrop = 224
 
