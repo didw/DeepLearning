@@ -349,7 +349,7 @@ function dataset:sample(quantity, depth)
    return data, scalarLabels
 end
 
-function dataset:get(i1, i2)
+function dataset:get(i1, i2, depth)
    local indices = torch.range(i1, i2);
    local quantity = i2 - i1 + 1;
    assert(quantity > 0)
@@ -359,9 +359,13 @@ function dataset:get(i1, i2)
    for i=1,quantity do
       -- load the sample
       local imgpath = ffi.string(torch.data(self.imagePath[indices[i]]))
-      local out = self:sampleHookTest(imgpath)
+      local out = self:sampleHookTest(imgpath, depth)
       table.insert(dataTable, out)
-      table.insert(scalarTable, self.imageClass[indices[i]])
+      local classes = {}
+      for j=1,depth do
+         table.insert(classes, self.imageClass[indices[i]])
+      end
+      table.insert(scalarTable, classes)
    end
    local data, scalarLabels = tableToOutput(self, dataTable, scalarTable)
    return data, scalarLabels

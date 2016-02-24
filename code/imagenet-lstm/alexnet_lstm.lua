@@ -15,11 +15,17 @@ function AL:__init(opt)
   self.num_layers = opt.numLayers;
   self.num_class = opt.nClasses;
 
-  local D, H, C = self.cnn_size, self.rnn_size, self.num_class
+  local I, D, H, C = self.input_size, self.cnn_size, self.rnn_size, self.num_class
+  local N, T = opt.batchSize, opt.depthSize;
 
   self.net = nn.Sequential()
   self.rnns = {}
+  self.cnn_view1 = nn.View(N*T,3,I,I)
+  self.cnn_view2 = nn.View(N,T,-1)
+  
+  self.net:add(self.cnn_view1)
   self.net:add(createModel(opt.nGPU))
+  self.net:add(self.cnn_view2)
   for i = 1, self.num_layers do
     local prev_dim = H
     if i == 1 then prev_dim = D end
@@ -44,6 +50,7 @@ function AL:__init(opt)
   self.net:add(self.view1)
   self.net:add(nn.Linear(H, C))
   self.net:add(self.view2)
+  self.net:cuda()
 end
 
 

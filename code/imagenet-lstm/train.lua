@@ -150,7 +150,7 @@ function trainBatch(inputsCPU, labelsCPU)
    -- transfer over to GPU
    inputs:resize(inputsCPU:size()):copy(inputsCPU)
    labels:resize(labelsCPU:size()):copy(labelsCPU)
-
+   
    local err, outputs
    local N = opt.batchSize;
    local T = opt.depthSize;
@@ -181,9 +181,9 @@ function trainBatch(inputsCPU, labelsCPU)
    -- top-1 error
    local top1 = 0
    do
-      local _,prediction_sorted = outputs:float():sort(2, true) -- descending
+      local _,prediction_sorted = outputs:float():sort(3, true) -- descending
       for i=1,opt.batchSize do
-         if prediction_sorted[i][1] == labelsCPU[i] then
+         if prediction_sorted[i][opt.depthSize][1] == labelsCPU[i][opt.depthSize] then
             top1_epoch = top1_epoch + 1;
             top1 = top1 + 1
          end
