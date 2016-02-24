@@ -27,7 +27,10 @@ else
    paths.dofile('models/' .. opt.netType .. '.lua')
    print('=> Creating model from file: models/' .. opt.netType .. '.lua')
    --model = createModel(opt.nGPU) -- for the model creation code, check the models/ folder
-   model = nn.AlexnetLstm -- for the model creation code, check the models/ folder
+   model = nn.Sequential();
+   model:add(nn.AlexnetLstm(opt)) -- for the model creation code, check the models/ folder
+
+
    if opt.backend == 'cudnn' then
       require 'cudnn'
       cudnn.convert(model, cudnn)
@@ -37,9 +40,11 @@ else
 end
 
 -- 2. Create Criterion
+--criterion = nn.ClassNLLCriterion()
 criterion = nn.CrossEntropyCriterion()
 
 print('=> Model')
+print("model: ", torch.type(model))
 print(model)
 
 print('=> Criterion')
